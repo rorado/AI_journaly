@@ -1,3 +1,4 @@
+import NewEntryCard from "@/components/NewEntryCard";
 import { getUserByClerckID } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 
@@ -18,9 +19,15 @@ const journalPage = async () => {
   const entries = await getEntry();
 
   return (
-    <div>
+    <div className="px-8">
+      <h1 className="text-[40px] my-2 font-thin">Journaly</h1>
+      <NewEntryCard />
       {entries.map((entry) => (
-        <div>{entry.title}</div>
+        <div key={entry.id}>
+          <h2 className="text-2xl font-semibold mb-1">{entry.title}</h2>
+          <p className="text-gray-700 mb-4">{entry.content}</p>
+          <hr className="mb-4" />
+        </div>
       ))}
     </div>
   );
