@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/loading";
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import { RiMenuFold2Line } from "react-icons/ri";
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const menu = [
     { name: "Dashboard", link: "/dashboard" },
-    { name: "Journaly", link: "/dashboard/journaly" },
+    { name: "model", link: "/model" },
     { name: "Settings", link: "/dashboard/settings" },
   ];
 
@@ -22,15 +23,15 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  if (isCollapsed === null) {
+  if (isCollapsed) {
     return (
-      <div className="w-screen h-screen spinner flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-5 border-gray-800"></div>
-      </div>
+      <>
+        <Loading />
+      </>
     );
   } else {
     return (
-      <div className="w-screen h-screen relative overflow-hidden flex">
+      <div className="w-screen h-screen relative flex">
         <div className="fixed top-0.5 left-4 lg:hidden mt-2 w-fit h-fit z-20">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -44,7 +45,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           </button>
         </div>
         <aside
-          className={`overflow-hidden z-10 absolute left-0 top-0 h-full duration-500 ease-in-out transition-all  ${
+          className={`z-10 absolute left-0 top-0 h-full duration-500 ease-in-out transition-all  ${
             isCollapsed ? "w-0 lg:w-16" : "w-screen lg:w-64"
           } bg-gray-200 `}
         >
@@ -82,7 +83,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             isCollapsed ? "ml-0 lg:ml-16" : "lg:ml-64 "
           } h-full w-full px-4`}
         >
-          <header className="h-16 flex items-center shadow-md justify-between ">
+          <header className="h-16 flex items-center justify-between ">
             <div></div>
             <UserButton />
           </header>

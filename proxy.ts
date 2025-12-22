@@ -1,25 +1,19 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isProtectedRoute = createRouteMatcher([
-  '/journal(.*)',
-  '/new-user(.*)',
-]);
+// Define the routes you want protected:
+const isProtectedRoute = createRouteMatcher(["/journal(.*)", "/new-user(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId, redirectToSignIn } = await auth();
-
-  if (!userId && isProtectedRoute(req)) {
-    return redirectToSignIn();
-  }
-
-  if (userId && isProtectedRoute(req)) {
-    await auth.protect();
+  // If trying to access a *protected route*, enforce authentication
+  if (isProtectedRoute(req)) {
+    await auth.protect(); // redirects to sign-in if not signed in
   }
 });
 
 export const config = {
   matcher: [
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    '/(api|trpc)(.*)',
+    // Runs middleware for all page & API requests except static files
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
   ],
 };

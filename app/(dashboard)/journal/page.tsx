@@ -20,7 +20,6 @@ const journalPage = async () => {
 
   return (
     <div className="px-8">
-      <h1 className="text-[40px] my-2 font-thin">Journaly</h1>
       <NewEntryCard />
       {entries.map((entry) => (
         <div key={entry.id}>

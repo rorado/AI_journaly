@@ -25,7 +25,7 @@ model User {
 
 model Journal {
   id        String    @id @default(cuid())
-  title     String    @db.Text
+  title     String?    @db.Text
   content   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
