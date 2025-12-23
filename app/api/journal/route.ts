@@ -1,9 +1,9 @@
+import { getUserByClerckID } from "@/utils/auth";
 import { prisma } from "@/utils/db";
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const { userId } = await auth();
+  const userId = await getUserByClerckID();
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -24,9 +24,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let user = await prisma.user.findUnique({ where: { clerkId: userId } });
-
-  if (!user) {
+  if (!userId) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
@@ -34,7 +32,7 @@ export async function POST(request: Request) {
     data: {
       title,
       content,
-      userId: user.id,
+      userId: userId.id,
     },
   });
 
@@ -45,8 +43,17 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  return NextResponse.json({
-    message: "Journal API",
-    hint: 'POST JSON with a "fo" field to create an entry.',
+  const user = await getUserByClerckID();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const entries = await prisma.journal.findMany({
+    where: {
+      userId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
+  return NextResponse.json({ data: entries }, { status: 200 });
 }

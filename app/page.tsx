@@ -6,7 +6,7 @@ export default async function Home() {
 
   let href = userId ? "/journal" : "/sign-in";
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-background text-foreground">
       <div className="flex flex-col gap-1.5">
         <h1 className="text-4xl font-bold mb-4">Welcome to my Ai site</h1>
         <p>
@@ -14,7 +14,7 @@ export default async function Home() {
           you have to do is be honest.
         </p>
         <Link href={href} className="mt-4">
-          <button className="p-2 bg-blue-700 rounded-lg cursor-pointer hover:bg-blue-800">
+          <button className="p-2 rounded-lg cursor-pointer btn">
             Get started
           </button>
         </Link>

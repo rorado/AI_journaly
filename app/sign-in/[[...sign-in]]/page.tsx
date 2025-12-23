@@ -1,5 +1,4 @@
 import CustomSignIn from "@/components/SignInPage";
-import { SignIn } from "@clerk/nextjs";
 
 export default function Page() {
   return (

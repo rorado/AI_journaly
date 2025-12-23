@@ -7,9 +7,11 @@ import { CgClose } from "react-icons/cg";
 export default function NewEntryModel({
   toggle,
   isOpen,
+  handleReload,
 }: {
   toggle: () => void;
   isOpen: boolean;
+  handleReload: () => any;
 }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -34,6 +36,7 @@ export default function NewEntryModel({
 
       setTitle("");
       setContent("");
+      handleReload();
     } catch (err) {
       setError("Failed to add journal entry");
     } finally {
@@ -45,7 +48,7 @@ export default function NewEntryModel({
   return (
     <ModalPortal>
       <div
-        className={`items-center fixed top-0 left-0 w-screen z-40 h-screen flex justify-center  bg-gray-800/50 ${
+        className={`items-center fixed top-0 left-0 w-screen z-40 h-screen flex justify-center  bg-gray-800/50 text-slate-900 ${
           isOpen ? "flex" : "hidden"
         }`}
         onClick={toggle}
@@ -59,9 +62,7 @@ export default function NewEntryModel({
             className="max-w-md mx-auto w-full space-y-6"
           >
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-slate-900 text-3xl font-semibold ">
-                New Entry
-              </h2>
+              <h2 className="text-3xl font-semibold ">New Entry</h2>
               <div>
                 <CgClose
                   onClick={toggle}
