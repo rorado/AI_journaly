@@ -110,7 +110,7 @@ const SingleEntry = () => {
       </header>
 
       <article className="px-6 py-6 border rounded-lg shadow-sm bg-white dark:bg-gray-800 max-w-prose overflow-hidden">
-        <p className="whitespace-pre-line leading-relaxed text-gray-800 dark:text-gray-200 break-words">
+        <p className="whitespace-pre-line leading-relaxed text-gray-800 dark:text-gray-200 wrap-break-word">
           {entry.content}
         </p>
 
