@@ -3,7 +3,7 @@
 import LoadingSVG from "@/components/LoadingSVG";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { useAutosave } from "react-autosave";
 type JournalEntry = {
   id: string;
   title?: string | null;
@@ -19,6 +19,8 @@ const SingleEntry = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showNotFound, setShowNotFound] = useState(false);
+  const [editedEntry, setEditedEntry] = useState("");
+  const [isLoadingSave, setIsLoadingSave] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -65,6 +67,26 @@ const SingleEntry = () => {
       clearTimeout(notFoundTimer);
     };
   }, [id]);
+  useEffect(() => {
+    if (entry) {
+      setEditedEntry(entry.content);
+    }
+  }, [entry]);
+
+  useAutosave({
+    data: editedEntry,
+    onSave: async (_value) => {
+      setIsLoadingSave(true);
+      await fetch(`/api/journal/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: _value }),
+      });
+      setIsLoadingSave(false);
+    },
+  });
 
   if (loading) {
     return (
@@ -110,9 +132,20 @@ const SingleEntry = () => {
       </header>
 
       <article className="px-6 py-6 border rounded-lg shadow-sm bg-white dark:bg-gray-800 max-w-prose overflow-hidden">
-        <p className="whitespace-pre-line leading-relaxed text-gray-800 dark:text-gray-200 wrap-break-word">
+        {/* <p className="whitespace-pre-line leading-relaxed text-gray-800 dark:text-gray-200 wrap-break-word">
           {entry.content}
+        </p> */}
+        <p>
+          {isLoadingSave && (
+            <span className="text-xs text-gray-400 mr-2">Saving...</span>
+          )}
         </p>
+        <textarea
+          className="w-full h-100 bg-transparent border-0 focus:ring-0 text-gray-800 dark:text-gray-200 leading-relaxed resize-none wrap-break-word outline-none"
+          name=""
+          value={editedEntry}
+          onChange={(e) => setEditedEntry(e.target.value)}
+        />
 
         <footer className="mt-6 text-xs text-gray-500 dark:text-gray-400 flex justify-end">
           Updated {new Date(entry.updatedAt).toLocaleDateString()}
