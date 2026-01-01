@@ -2,8 +2,9 @@
 
 import LoadingSVG from "@/components/LoadingSVG";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAutosave } from "react-autosave";
+
 type JournalEntry = {
   id: string;
   title?: string | null;
@@ -19,9 +20,17 @@ const SingleEntry = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showNotFound, setShowNotFound] = useState(false);
+
   const [editedEntry, setEditedEntry] = useState("");
   const [isLoadingSave, setIsLoadingSave] = useState(false);
 
+  // track last saved value
+  const lastSavedRef = useRef<string>("");
+
+  const analyzes = [
+    { name: "Sentiment Analysis", result: "Positive", mood: "Positive" },
+  ];
+  /* ---------------- FETCH ENTRY ---------------- */
   useEffect(() => {
     if (!id) return;
 
@@ -50,6 +59,8 @@ const SingleEntry = () => {
           }, 5000);
         } else {
           setEntry(json.data);
+          setEditedEntry(json.data.content);
+          lastSavedRef.current = json.data.content;
         }
       } catch (err: any) {
         if (err.name !== "AbortError") {
@@ -67,24 +78,27 @@ const SingleEntry = () => {
       clearTimeout(notFoundTimer);
     };
   }, [id]);
-  useEffect(() => {
-    if (entry) {
-      setEditedEntry(entry.content);
-    }
-  }, [entry]);
 
   useAutosave({
     data: editedEntry,
-    onSave: async (_value) => {
+    onSave: async (value) => {
+      if (value === lastSavedRef.current) return;
+
       setIsLoadingSave(true);
-      await fetch(`/api/journal/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content: _value }),
-      });
-      setIsLoadingSave(false);
+
+      try {
+        await fetch(`/api/journal/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: value }),
+        });
+
+        lastSavedRef.current = value;
+      } catch (err) {
+        console.error("Error autosaving journal entry:", err);
+      } finally {
+        setIsLoadingSave(false);
+      }
     },
   });
 
@@ -120,8 +134,8 @@ const SingleEntry = () => {
   }
 
   return (
-    <div className="px-8 max-w-3xl mx-auto">
-      <header className="mb-8">
+    <div className="px-8  mx-auto w-full h-full">
+      {/* <header className="mb-8">
         <h1 className="text-[40px] font-thin tracking-tight">
           {entry.title || "Untitled Entry"}
         </h1>
@@ -129,28 +143,48 @@ const SingleEntry = () => {
           {new Date(entry.createdAt).toLocaleDateString()}{" "}
           {new Date(entry.createdAt).toLocaleTimeString()}
         </p>
-      </header>
+      </header> */}
+      <div className="flex gap-10 md:gap-16 lg:gap-20 justify-between w-full lg:flex-row flex-col h-full">
+        <div className="p-12 w-full">
+          <article className="px-6 py-6 border rounded-lg shadow-sm bg-white dark:bg-gray-800 overflow-hidden h-60">
+            <div className="mb-2 text-xs text-gray-400">
+              {isLoadingSave ? "Saving..." : "Saved"}
+            </div>
 
-      <article className="px-6 py-6 border rounded-lg shadow-sm bg-white dark:bg-gray-800 max-w-prose overflow-hidden">
-        {/* <p className="whitespace-pre-line leading-relaxed text-gray-800 dark:text-gray-200 wrap-break-word">
-          {entry.content}
-        </p> */}
-        <p>
-          {isLoadingSave && (
-            <span className="text-xs text-gray-400 mr-2">Saving...</span>
-          )}
-        </p>
-        <textarea
-          className="w-full h-100 bg-transparent border-0 focus:ring-0 text-gray-800 dark:text-gray-200 leading-relaxed resize-none wrap-break-word outline-none"
-          name=""
-          value={editedEntry}
-          onChange={(e) => setEditedEntry(e.target.value)}
-        />
+            <textarea
+              className="w-full h-30 bg-transparent border-0 focus:ring-0 resize-none outline-none text-gray-800 dark:text-gray-200 leading-relaxed"
+              value={editedEntry}
+              onChange={(e) => setEditedEntry(e.target.value)}
+            />
 
-        <footer className="mt-6 text-xs text-gray-500 dark:text-gray-400 flex justify-end">
-          Updated {new Date(entry.updatedAt).toLocaleDateString()}
-        </footer>
-      </article>
+            <footer className="mt-6 text-xs text-gray-500 flex justify-end">
+              Updated {new Date(entry.updatedAt).toLocaleDateString()}
+            </footer>
+          </article>
+        </div>
+        <div className="w-full">
+          <div className="border-l border-2 border-gray-700">
+            <div className="bg-gray-700 p-3.5">
+              <h2 className="text-2xl font-semibold mb-4">Analyses</h2>
+            </div>
+            <ul className="list-none p-0 m-0">
+              {analyzes.map((analysis) => (
+                <li key={analysis.name} className="relative ">
+                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                    {analysis.name}
+                  </h3>
+                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                    {analysis.mood}
+                  </h3>
+                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                    {analysis.result}
+                  </h3>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
