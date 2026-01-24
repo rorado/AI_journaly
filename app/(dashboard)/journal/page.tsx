@@ -12,13 +12,27 @@ const JournalPage = () => {
 
   const handlegGetEntry = async () => {
     setLoading(true);
-    const data = await fetch("/api/journal", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((res) => res.data);
-    setEntries(data as Journal[]);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/journal", { method: "GET" });
+      if (!res.ok) {
+        setEntries([]);
+        setLoading(false);
+        return;
+      }
+      let json = null;
+      try {
+        json = await res.json();
+      } catch (e) {
+        setEntries([]);
+        setLoading(false);
+        return;
+      }
+      setEntries(Array.isArray(json?.data) ? json.data : []);
+    } catch (e) {
+      setEntries([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

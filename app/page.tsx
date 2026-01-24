@@ -3,6 +3,7 @@ import Link from "next/link";
 
 export default async function Home() {
   const { userId } = await auth();
+  console.log(userId);
 
   let href = userId ? "/journal" : "/sign-in";
   return (
