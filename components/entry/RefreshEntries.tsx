@@ -1,21 +1,14 @@
 "use client";
 
+import { type } from "os";
 import { TfiReload } from "react-icons/tfi";
 
 const RefreshEntries = ({ handleReload }: { handleReload: () => any }) => {
   return (
-    <div className="group relative rounded-full bg-foreground p-1">
-      <TfiReload
-        size={26}
-        className="cursor-pointer text-primary hover:scale-105 transition-transform duration-300"
-        onClick={handleReload}
-      />
-      <div className="p-2 rounded-md group-hover:flex hidden absolute -top-2 -translate-y-full left-1/2 -translate-x-1/2 transition-all duration-800">
-        <span className="whitespace-nowrap bg-primary px-2 py-1 rounded-md">
-          refresh
-        </span>
-      </div>
-    </div>
+  <button type="button" className="button_refresh" onClick={handleReload}>
+    <span className="button__text">Refresh</span>
+    <span className="button__icon"><svg className="svg" height="48" viewBox="0 0 48 48" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M35.3 12.7c-2.89-2.9-6.88-4.7-11.3-4.7-8.84 0-15.98 7.16-15.98 16s7.14 16 15.98 16c7.45 0 13.69-5.1 15.46-12h-4.16c-1.65 4.66-6.07 8-11.3 8-6.63 0-12-5.37-12-12s5.37-12 12-12c3.31 0 6.28 1.38 8.45 3.55l-6.45 6.45h14v-14l-4.7 4.7z"></path><path d="M0 0h48v48h-48z" fill="none"></path></svg></span>
+  </button>    
   );
 };
 

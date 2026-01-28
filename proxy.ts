@@ -8,8 +8,6 @@ export default clerkMiddleware(async (auth, req) => {
     const data = await auth();
     const { isAuthenticated, sessionId } = data;
 
-    console.log("Middleware auth check:", { isAuthenticated, sessionId });
-
     if (isProtectedRoute(req)) {
       await auth.protect();
     }

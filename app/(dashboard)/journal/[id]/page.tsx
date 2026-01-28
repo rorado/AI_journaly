@@ -1,22 +1,14 @@
 "use client";
 
-import LoadingSVG from "@/components/LoadingSVG";
-import { useParams } from "next/navigation";
+import Loading from "@/components/LoadingSVG";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useAutosave } from "react-autosave";
-
-type JournalEntry = {
-  id: string;
-  title?: string | null;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 const SingleEntry = () => {
   const { id } = useParams<{ id: string }>();
 
-  const [entry, setEntry] = useState<JournalEntry | null>(null);
+  const [entry, setEntry] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showNotFound, setShowNotFound] = useState(false);
@@ -27,9 +19,8 @@ const SingleEntry = () => {
   // track last saved value
   const lastSavedRef = useRef<string>("");
 
-  const analyzes = [
-    { name: "Sentiment Analysis", result: "Positive", mood: "Positive" },
-  ];
+  const router = useRouter();
+
   /* ---------------- FETCH ENTRY ---------------- */
   useEffect(() => {
     if (!id) return;
@@ -49,6 +40,7 @@ const SingleEntry = () => {
 
         const json = await res.json();
 
+        console.log("Response:", json.data);
         if (!res.ok) {
           throw new Error(json?.error || "Unable to load journal entry");
         }
@@ -102,10 +94,22 @@ const SingleEntry = () => {
     },
   });
 
-  if (loading) {
+  if (loading || !entry) {
     return (
-      <div className="flex justify-center items-center h-full">
-        <LoadingSVG />
+      <div>
+        <header className="mt-8">
+          <div>
+            <button
+              className="text-sm text-blue-500 hover:underline mb-4 block cursor-pointer"
+              onClick={() => router.replace("/journal")}
+            >
+              &larr; Back to Entries
+            </button>
+          </div>
+        </header>
+        <div className="flex justify-center items-center h-full mt-40">
+          <Loading />
+        </div>
       </div>
     );
   }
@@ -125,17 +129,17 @@ const SingleEntry = () => {
     );
   }
 
-  if (!entry) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <LoadingSVG />
-      </div>
-    );
-  }
-
   return (
     <div className="px-8  mx-auto w-full h-full">
-      {/* <header className="mb-8">
+      <header className="mb-8">
+        <div>
+          <button
+            className="text-sm text-blue-500 hover:underline mb-4 block cursor-pointer"
+            onClick={() => router.replace("/journal")}
+          >
+            &larr; Back to Entries
+          </button>
+        </div>
         <h1 className="text-[40px] font-thin tracking-tight">
           {entry.title || "Untitled Entry"}
         </h1>
@@ -143,7 +147,7 @@ const SingleEntry = () => {
           {new Date(entry.createdAt).toLocaleDateString()}{" "}
           {new Date(entry.createdAt).toLocaleTimeString()}
         </p>
-      </header> */}
+      </header>
       <div className="flex gap-10 md:gap-16 lg:gap-20 justify-between w-full lg:flex-row flex-col h-full">
         <div className="p-12 w-full">
           <article className="px-6 py-6 border rounded-lg shadow-sm bg-white dark:bg-gray-800 overflow-hidden h-60">
@@ -168,19 +172,20 @@ const SingleEntry = () => {
               <h2 className="text-2xl font-semibold mb-4">Analyses</h2>
             </div>
             <ul className="list-none p-0 m-0">
-              {analyzes.map((analysis) => (
-                <li key={analysis.name} className="relative ">
-                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
-                    {analysis.name}
-                  </h3>
-                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
-                    {analysis.mood}
-                  </h3>
-                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
-                    {analysis.result}
-                  </h3>
-                </li>
-              ))}
+              <li key={entry.analysis?.name} className="relative ">
+                <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                  {entry.analysis?.summary}
+                </h3>
+                <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                  {entry.analysis?.mood} {"  "} {entry.analysis?.sticker}
+                </h3>
+                <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                  {entry.analysis?.summary}
+                </h3>
+                <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                  {entry.analysis?.negative ? "Negative" : "Positive"}
+                </h3>
+              </li>
             </ul>
           </div>
         </div>

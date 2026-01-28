@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -27,7 +27,7 @@ model User {
 
 model Journal {
   id        String    @id @default(cuid())
-  title     String?    @db.Text
+  title     String?   @db.Text
   content   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -41,10 +41,12 @@ model Analysis {
   journalId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  journal Journal @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  journal   Journal  @relation(fields: [journalId], references: [id], onDelete: Cascade)
   mood      String
   summary   String   @db.Text
-  negative Boolean
+  negative  Boolean
   color     String
+  sticker   String
+
   @@unique([journalId])
 }

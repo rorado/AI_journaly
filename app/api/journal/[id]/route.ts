@@ -1,6 +1,9 @@
+import { chain, TextAnalysisSchema } from "@/utils/ai";
 import { getUserByClerckID } from "@/utils/auth";
 import { prisma } from "@/utils/db";
+import { updateTag } from "next/cache";
 import { NextResponse } from "next/server";
+import z from "zod";
 
 export async function GET(
   req: Request,
@@ -22,11 +25,10 @@ export async function GET(
 
   let entry;
 
-  console.log("Fetching journal entry with ID:", params);
-
   if (user.isAdmin) {
     entry = await prisma.journal.findUnique({
       where: { id: id },
+      include: { analysis: true },
     });
   } else {
     entry = await prisma.journal.findFirst({
@@ -34,6 +36,7 @@ export async function GET(
         id: id,
         userId: user.id,
       },
+      include: { analysis: true },
     });
   }
 
@@ -44,7 +47,7 @@ export async function GET(
     );
   }
 
-  return NextResponse.json({ data: entry }, { status: 200 });
+  return NextResponse.json({ data: entry as typeof entry }, { status: 200 });
 }
 
 export async function PATCH(
@@ -59,27 +62,53 @@ export async function PATCH(
   const user = await prisma.user.findUnique({
     where: { id: userId.id },
   });
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { content } = await req.json();
 
+      const rawResult = await chain.invoke({ text: content });
+  
+      const analysis: z.infer<typeof TextAnalysisSchema> =
+      TextAnalysisSchema.parse(rawResult);
   let entry;
   if (user.isAdmin) {
-    entry = await prisma.journal.updateMany({
-      where: { id: id },
-      data: { content: content },
-    });
-  } else {
-    entry = await prisma.journal.updateMany({
+    entry = await prisma.journal.update({
+  where: { id },
+  data: {
+    title: analysis.title,
+    content,
+    analysis: {
+      update: {
+        mood: analysis.mood,
+        summary: analysis.summary,
+        negative: analysis.negative,
+        color: analysis.color,
+        sticker: analysis.sticker,
+      },
+    },
+  },
+});
+  } else if (user.clerkId == userId.clerkId) {
+    entry = await prisma.journal.update({
       where: {
         id: id,
         userId: user.id,
       },
-      data: { content: content },
+      data: {
+      title: analysis.title,
+      content,
+      analysis: {
+        update: {
+          mood: analysis.mood,
+          summary: analysis.summary,
+          negative: analysis.negative,
+          color: analysis.color,
+          sticker: analysis.sticker,
+        },
+      },
+  },
     });
   }
-  if (entry.count === 0) {
+  if (!entry) {
     return NextResponse.json(
       { error: "Journal entry not found or no permission to edit" },
       { status: 404 }

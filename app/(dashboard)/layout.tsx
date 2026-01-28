@@ -1,7 +1,6 @@
 // This is a client-side layout for the dashboard section
 "use client";
 
-import Loading from "@/app/loading";
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -12,8 +11,8 @@ import { RiMenuFold2Line } from "react-icons/ri";
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   // Sidebar menu items
   const menu = [
-    { name: "Dashboard", link: "/dashboard" },
-    { name: "model", link: "/model" },
+    { name: "Entries", link: "/journal" },
+    { name: "Model", link: "/model" },
     { name: "Settings", link: "/dashboard/settings" },
   ];
 

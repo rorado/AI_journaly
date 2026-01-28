@@ -1,15 +1,14 @@
 "use client";
-import { Journal } from "@/app/generated/prisma/client";
+import { Journal } from "@/generated/prisma/client";
 import NewEntryCard from "@/components/entry/NewEntryCard";
 import RefreshEntries from "@/components/entry/RefreshEntries";
-import LoadingSVG from "@/components/LoadingSVG";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Loading from "@/components/LoadingSVG";
 
 const JournalPage = () => {
   const [entries, setEntries] = useState<Journal[]>([]);
   const [loading, setLoading] = useState(false);
-
   const handlegGetEntry = async () => {
     setLoading(true);
     try {
@@ -50,10 +49,9 @@ const JournalPage = () => {
           </div>
         </div>
       </div>
-
       {loading ? (
         <div className="flex justify-center items-center mt-20">
-          <LoadingSVG />
+          <Loading />
         </div>
       ) : entries.length === 0 ? (
         <p className="text-center text-gray-500 mt-8">
@@ -61,6 +59,7 @@ const JournalPage = () => {
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
+          {/* <Loading /> */}
           {entries.map((entry) => (
             <Link
               href={`/journal/${entry.id}`}

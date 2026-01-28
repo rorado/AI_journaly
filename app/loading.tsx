@@ -1,11 +1,11 @@
-import LoadingSVG from "@/components/LoadingSVG";
+import Loading from "@/components/LoadingSVG";
 
-const Loading = () => {
+const LoadingPAge = () => {
   return (
-    <div className="containerLoading">
-      <LoadingSVG />
+    <div className="w-full h-[100vh] flex justify-center items-center">
+      <Loading />
     </div>
   );
 };
 
-export default Loading;
+export default LoadingPAge;
