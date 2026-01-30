@@ -7,7 +7,7 @@ import z from "zod";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const userId = await getUserByClerckID();
   const { id } = await params;
@@ -43,7 +43,7 @@ export async function GET(
   if (!entry) {
     return NextResponse.json(
       { error: "Journal entry not found" },
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -52,7 +52,7 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const userId = await getUserByClerckID();
   const { id } = await params;
@@ -62,31 +62,32 @@ export async function PATCH(
   const user = await prisma.user.findUnique({
     where: { id: userId.id },
   });
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { content } = await req.json();
 
-      const rawResult = await chain.invoke({ text: content });
-  
-      const analysis: z.infer<typeof TextAnalysisSchema> =
-      TextAnalysisSchema.parse(rawResult);
+  const rawResult = await chain.invoke({ text: content });
+
+  const analysis: z.infer<typeof TextAnalysisSchema> =
+    TextAnalysisSchema.parse(rawResult);
   let entry;
   if (user.isAdmin) {
     entry = await prisma.journal.update({
-  where: { id },
-  data: {
-    title: analysis.title,
-    content,
-    analysis: {
-      update: {
-        mood: analysis.mood,
-        summary: analysis.summary,
-        negative: analysis.negative,
-        color: analysis.color,
-        sticker: analysis.sticker,
+      where: { id },
+      data: {
+        title: analysis.title,
+        content,
+        analysis: {
+          update: {
+            mood: analysis.mood,
+            summary: analysis.summary,
+            negative: analysis.negative,
+            color: analysis.color,
+            sticker: analysis.sticker,
+          },
+        },
       },
-    },
-  },
-});
+    });
   } else if (user.clerkId == userId.clerkId) {
     entry = await prisma.journal.update({
       where: {
@@ -94,28 +95,28 @@ export async function PATCH(
         userId: user.id,
       },
       data: {
-      title: analysis.title,
-      content,
-      analysis: {
-        update: {
-          mood: analysis.mood,
-          summary: analysis.summary,
-          negative: analysis.negative,
-          color: analysis.color,
-          sticker: analysis.sticker,
+        title: analysis.title,
+        content,
+        analysis: {
+          update: {
+            mood: analysis.mood,
+            summary: analysis.summary,
+            negative: analysis.negative,
+            color: analysis.color,
+            sticker: analysis.sticker,
+          },
         },
       },
-  },
     });
   }
   if (!entry) {
     return NextResponse.json(
       { error: "Journal entry not found or no permission to edit" },
-      { status: 404 }
+      { status: 404 },
     );
   }
   return NextResponse.json(
     { data: "Journal entry updated successfully" },
-    { status: 200 }
+    { status: 200 },
   );
 }

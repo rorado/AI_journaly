@@ -21,20 +21,20 @@ export const Moods = [
   "hopeless",
 ] as const;
 
-export type Mood = typeof Moods[number];
+export type Mood = (typeof Moods)[number];
 
 export const MoodMeta = {
-  joyful:     { color: "#2ecc71", sticker: "😄" },
-  content:    { color: "#6ab04c", sticker: "🙂" },
-  excited:    { color: "#f9ca24", sticker: "🤩" },
-  calm:       { color: "#22a6b3", sticker: "😌" },
-  neutral:    { color: "#808080", sticker: "😐" },
-  confused:   { color: "#95afc0", sticker: "😕" },
-  anxious:    { color: "#f0932b", sticker: "😰" },
+  joyful: { color: "#2ecc71", sticker: "😄" },
+  content: { color: "#6ab04c", sticker: "🙂" },
+  excited: { color: "#f9ca24", sticker: "🤩" },
+  calm: { color: "#22a6b3", sticker: "😌" },
+  neutral: { color: "#808080", sticker: "😐" },
+  confused: { color: "#95afc0", sticker: "😕" },
+  anxious: { color: "#f0932b", sticker: "😰" },
   frustrated: { color: "#eb4d4b", sticker: "😤" },
-  sad:        { color: "#686de0", sticker: "😢" },
-  angry:      { color: "#ff4757", sticker: "😡" },
-  hopeless:   { color: "#2f3640", sticker: "😞" },
+  sad: { color: "#686de0", sticker: "😢" },
+  angry: { color: "#ff4757", sticker: "😡" },
+  hopeless: { color: "#2f3640", sticker: "😞" },
 } as const;
 
 export const TextAnalysisSchema = z.object({
@@ -47,7 +47,6 @@ export const TextAnalysisSchema = z.object({
   sticker: z.string().min(1).max(2),
   sentimentScore: z.number().min(-10).max(10),
 });
-
 
 const llm = new ChatGroq({
   model: "llama-3.1-8b-instant",
@@ -72,7 +71,7 @@ Output format:
   "summary": string,
   "color": string,
   "sticker": string,
-  "sentimentScore": number between -10 and 10
+  "sentimentScore": int (number between -10 and 10)
 }}
 
 Rules:
@@ -88,9 +87,7 @@ Rules:
 - color and sticker MUST match mood exactly:
 
 ${Object.entries(MoodMeta)
-  .map(
-    ([m, v]) => `- ${m}: color ${v.color}, sticker ${v.sticker}`
-  )
+  .map(([m, v]) => `- ${m}: color ${v.color}, sticker ${v.sticker}`)
   .join("\n")}
 
 Journal Entry:
@@ -98,6 +95,5 @@ Journal Entry:
 `);
 
 export const chain = prompt.pipe(llm).pipe(parser);
-
 
 export type TextAnalysis = z.infer<typeof TextAnalysisSchema>;

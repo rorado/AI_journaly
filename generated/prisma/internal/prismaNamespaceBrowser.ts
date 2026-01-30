@@ -107,7 +107,8 @@ export const AnalysisScalarFieldEnum = {
   summary: 'summary',
   negative: 'negative',
   color: 'color',
-  sticker: 'sticker'
+  sticker: 'sticker',
+  sentimentScore: 'sentimentScore'
 } as const
 
 export type AnalysisScalarFieldEnum = (typeof AnalysisScalarFieldEnum)[keyof typeof AnalysisScalarFieldEnum]

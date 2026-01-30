@@ -20,8 +20,18 @@ export type AnalysisModel = runtime.Types.Result.DefaultSelection<Prisma.$Analys
 
 export type AggregateAnalysis = {
   _count: AnalysisCountAggregateOutputType | null
+  _avg: AnalysisAvgAggregateOutputType | null
+  _sum: AnalysisSumAggregateOutputType | null
   _min: AnalysisMinAggregateOutputType | null
   _max: AnalysisMaxAggregateOutputType | null
+}
+
+export type AnalysisAvgAggregateOutputType = {
+  sentimentScore: number | null
+}
+
+export type AnalysisSumAggregateOutputType = {
+  sentimentScore: number | null
 }
 
 export type AnalysisMinAggregateOutputType = {
@@ -34,6 +44,7 @@ export type AnalysisMinAggregateOutputType = {
   negative: boolean | null
   color: string | null
   sticker: string | null
+  sentimentScore: number | null
 }
 
 export type AnalysisMaxAggregateOutputType = {
@@ -46,6 +57,7 @@ export type AnalysisMaxAggregateOutputType = {
   negative: boolean | null
   color: string | null
   sticker: string | null
+  sentimentScore: number | null
 }
 
 export type AnalysisCountAggregateOutputType = {
@@ -58,9 +70,18 @@ export type AnalysisCountAggregateOutputType = {
   negative: number
   color: number
   sticker: number
+  sentimentScore: number
   _all: number
 }
 
+
+export type AnalysisAvgAggregateInputType = {
+  sentimentScore?: true
+}
+
+export type AnalysisSumAggregateInputType = {
+  sentimentScore?: true
+}
 
 export type AnalysisMinAggregateInputType = {
   id?: true
@@ -72,6 +93,7 @@ export type AnalysisMinAggregateInputType = {
   negative?: true
   color?: true
   sticker?: true
+  sentimentScore?: true
 }
 
 export type AnalysisMaxAggregateInputType = {
@@ -84,6 +106,7 @@ export type AnalysisMaxAggregateInputType = {
   negative?: true
   color?: true
   sticker?: true
+  sentimentScore?: true
 }
 
 export type AnalysisCountAggregateInputType = {
@@ -96,6 +119,7 @@ export type AnalysisCountAggregateInputType = {
   negative?: true
   color?: true
   sticker?: true
+  sentimentScore?: true
   _all?: true
 }
 
@@ -137,6 +161,18 @@ export type AnalysisAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: AnalysisAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: AnalysisSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: AnalysisMinAggregateInputType
@@ -167,6 +203,8 @@ export type AnalysisGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: AnalysisCountAggregateInputType | true
+  _avg?: AnalysisAvgAggregateInputType
+  _sum?: AnalysisSumAggregateInputType
   _min?: AnalysisMinAggregateInputType
   _max?: AnalysisMaxAggregateInputType
 }
@@ -181,7 +219,10 @@ export type AnalysisGroupByOutputType = {
   negative: boolean
   color: string
   sticker: string
+  sentimentScore: number
   _count: AnalysisCountAggregateOutputType | null
+  _avg: AnalysisAvgAggregateOutputType | null
+  _sum: AnalysisSumAggregateOutputType | null
   _min: AnalysisMinAggregateOutputType | null
   _max: AnalysisMaxAggregateOutputType | null
 }
@@ -214,6 +255,7 @@ export type AnalysisWhereInput = {
   negative?: Prisma.BoolFilter<"Analysis"> | boolean
   color?: Prisma.StringFilter<"Analysis"> | string
   sticker?: Prisma.StringFilter<"Analysis"> | string
+  sentimentScore?: Prisma.IntFilter<"Analysis"> | number
   journal?: Prisma.XOR<Prisma.JournalScalarRelationFilter, Prisma.JournalWhereInput>
 }
 
@@ -227,6 +269,7 @@ export type AnalysisOrderByWithRelationInput = {
   negative?: Prisma.SortOrder
   color?: Prisma.SortOrder
   sticker?: Prisma.SortOrder
+  sentimentScore?: Prisma.SortOrder
   journal?: Prisma.JournalOrderByWithRelationInput
 }
 
@@ -243,6 +286,7 @@ export type AnalysisWhereUniqueInput = Prisma.AtLeast<{
   negative?: Prisma.BoolFilter<"Analysis"> | boolean
   color?: Prisma.StringFilter<"Analysis"> | string
   sticker?: Prisma.StringFilter<"Analysis"> | string
+  sentimentScore?: Prisma.IntFilter<"Analysis"> | number
   journal?: Prisma.XOR<Prisma.JournalScalarRelationFilter, Prisma.JournalWhereInput>
 }, "id" | "journalId">
 
@@ -256,9 +300,12 @@ export type AnalysisOrderByWithAggregationInput = {
   negative?: Prisma.SortOrder
   color?: Prisma.SortOrder
   sticker?: Prisma.SortOrder
+  sentimentScore?: Prisma.SortOrder
   _count?: Prisma.AnalysisCountOrderByAggregateInput
+  _avg?: Prisma.AnalysisAvgOrderByAggregateInput
   _max?: Prisma.AnalysisMaxOrderByAggregateInput
   _min?: Prisma.AnalysisMinOrderByAggregateInput
+  _sum?: Prisma.AnalysisSumOrderByAggregateInput
 }
 
 export type AnalysisScalarWhereWithAggregatesInput = {
@@ -274,6 +321,7 @@ export type AnalysisScalarWhereWithAggregatesInput = {
   negative?: Prisma.BoolWithAggregatesFilter<"Analysis"> | boolean
   color?: Prisma.StringWithAggregatesFilter<"Analysis"> | string
   sticker?: Prisma.StringWithAggregatesFilter<"Analysis"> | string
+  sentimentScore?: Prisma.IntWithAggregatesFilter<"Analysis"> | number
 }
 
 export type AnalysisCreateInput = {
@@ -285,6 +333,7 @@ export type AnalysisCreateInput = {
   negative: boolean
   color: string
   sticker: string
+  sentimentScore: number
   journal: Prisma.JournalCreateNestedOneWithoutAnalysisInput
 }
 
@@ -298,6 +347,7 @@ export type AnalysisUncheckedCreateInput = {
   negative: boolean
   color: string
   sticker: string
+  sentimentScore: number
 }
 
 export type AnalysisUpdateInput = {
@@ -309,6 +359,7 @@ export type AnalysisUpdateInput = {
   negative?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sticker?: Prisma.StringFieldUpdateOperationsInput | string
+  sentimentScore?: Prisma.IntFieldUpdateOperationsInput | number
   journal?: Prisma.JournalUpdateOneRequiredWithoutAnalysisNestedInput
 }
 
@@ -322,6 +373,7 @@ export type AnalysisUncheckedUpdateInput = {
   negative?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sticker?: Prisma.StringFieldUpdateOperationsInput | string
+  sentimentScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AnalysisCreateManyInput = {
@@ -334,6 +386,7 @@ export type AnalysisCreateManyInput = {
   negative: boolean
   color: string
   sticker: string
+  sentimentScore: number
 }
 
 export type AnalysisUpdateManyMutationInput = {
@@ -345,6 +398,7 @@ export type AnalysisUpdateManyMutationInput = {
   negative?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sticker?: Prisma.StringFieldUpdateOperationsInput | string
+  sentimentScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AnalysisUncheckedUpdateManyInput = {
@@ -357,6 +411,7 @@ export type AnalysisUncheckedUpdateManyInput = {
   negative?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sticker?: Prisma.StringFieldUpdateOperationsInput | string
+  sentimentScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AnalysisNullableScalarRelationFilter = {
@@ -374,6 +429,11 @@ export type AnalysisCountOrderByAggregateInput = {
   negative?: Prisma.SortOrder
   color?: Prisma.SortOrder
   sticker?: Prisma.SortOrder
+  sentimentScore?: Prisma.SortOrder
+}
+
+export type AnalysisAvgOrderByAggregateInput = {
+  sentimentScore?: Prisma.SortOrder
 }
 
 export type AnalysisMaxOrderByAggregateInput = {
@@ -386,6 +446,7 @@ export type AnalysisMaxOrderByAggregateInput = {
   negative?: Prisma.SortOrder
   color?: Prisma.SortOrder
   sticker?: Prisma.SortOrder
+  sentimentScore?: Prisma.SortOrder
 }
 
 export type AnalysisMinOrderByAggregateInput = {
@@ -398,6 +459,11 @@ export type AnalysisMinOrderByAggregateInput = {
   negative?: Prisma.SortOrder
   color?: Prisma.SortOrder
   sticker?: Prisma.SortOrder
+  sentimentScore?: Prisma.SortOrder
+}
+
+export type AnalysisSumOrderByAggregateInput = {
+  sentimentScore?: Prisma.SortOrder
 }
 
 export type AnalysisCreateNestedOneWithoutJournalInput = {
@@ -432,6 +498,14 @@ export type AnalysisUncheckedUpdateOneWithoutJournalNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AnalysisUpdateToOneWithWhereWithoutJournalInput, Prisma.AnalysisUpdateWithoutJournalInput>, Prisma.AnalysisUncheckedUpdateWithoutJournalInput>
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type AnalysisCreateWithoutJournalInput = {
   id?: string
   createdAt?: Date | string
@@ -441,6 +515,7 @@ export type AnalysisCreateWithoutJournalInput = {
   negative: boolean
   color: string
   sticker: string
+  sentimentScore: number
 }
 
 export type AnalysisUncheckedCreateWithoutJournalInput = {
@@ -452,6 +527,7 @@ export type AnalysisUncheckedCreateWithoutJournalInput = {
   negative: boolean
   color: string
   sticker: string
+  sentimentScore: number
 }
 
 export type AnalysisCreateOrConnectWithoutJournalInput = {
@@ -479,6 +555,7 @@ export type AnalysisUpdateWithoutJournalInput = {
   negative?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sticker?: Prisma.StringFieldUpdateOperationsInput | string
+  sentimentScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AnalysisUncheckedUpdateWithoutJournalInput = {
@@ -490,6 +567,7 @@ export type AnalysisUncheckedUpdateWithoutJournalInput = {
   negative?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.StringFieldUpdateOperationsInput | string
   sticker?: Prisma.StringFieldUpdateOperationsInput | string
+  sentimentScore?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
@@ -504,6 +582,7 @@ export type AnalysisSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   negative?: boolean
   color?: boolean
   sticker?: boolean
+  sentimentScore?: boolean
   journal?: boolean | Prisma.JournalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["analysis"]>
 
@@ -517,6 +596,7 @@ export type AnalysisSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   negative?: boolean
   color?: boolean
   sticker?: boolean
+  sentimentScore?: boolean
   journal?: boolean | Prisma.JournalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["analysis"]>
 
@@ -530,6 +610,7 @@ export type AnalysisSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   negative?: boolean
   color?: boolean
   sticker?: boolean
+  sentimentScore?: boolean
   journal?: boolean | Prisma.JournalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["analysis"]>
 
@@ -543,9 +624,10 @@ export type AnalysisSelectScalar = {
   negative?: boolean
   color?: boolean
   sticker?: boolean
+  sentimentScore?: boolean
 }
 
-export type AnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "journalId" | "createdAt" | "updatedAt" | "mood" | "summary" | "negative" | "color" | "sticker", ExtArgs["result"]["analysis"]>
+export type AnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "journalId" | "createdAt" | "updatedAt" | "mood" | "summary" | "negative" | "color" | "sticker" | "sentimentScore", ExtArgs["result"]["analysis"]>
 export type AnalysisInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   journal?: boolean | Prisma.JournalDefaultArgs<ExtArgs>
 }
@@ -571,6 +653,7 @@ export type $AnalysisPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     negative: boolean
     color: string
     sticker: string
+    sentimentScore: number
   }, ExtArgs["result"]["analysis"]>
   composites: {}
 }
@@ -1004,6 +1087,7 @@ export interface AnalysisFieldRefs {
   readonly negative: Prisma.FieldRef<"Analysis", 'Boolean'>
   readonly color: Prisma.FieldRef<"Analysis", 'String'>
   readonly sticker: Prisma.FieldRef<"Analysis", 'String'>
+  readonly sentimentScore: Prisma.FieldRef<"Analysis", 'Int'>
 }
     
 

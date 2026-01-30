@@ -3,7 +3,6 @@
 import Loading from "@/components/LoadingSVG";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { useAutosave } from "react-autosave";
 
 const SingleEntry = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +14,8 @@ const SingleEntry = () => {
 
   const [editedEntry, setEditedEntry] = useState("");
   const [isLoadingSave, setIsLoadingSave] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [refetchData, setRefetchData] = useState(false);
 
   // track last saved value
   const lastSavedRef = useRef<string>("");
@@ -71,28 +72,39 @@ const SingleEntry = () => {
     };
   }, [id]);
 
-  useAutosave({
-    data: editedEntry,
-    onSave: async (value) => {
-      if (value === lastSavedRef.current) return;
+  const handleUpdate = async () => {
+    if (editedEntry === lastSavedRef.current) return;
+    setIsLoadingSave(true);
+    try {
+      await fetch(`/api/journal/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: editedEntry }),
+      });
+      lastSavedRef.current = editedEntry;
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Error updating journal entry:", err);
+    } finally {
+      setIsLoadingSave(false);
+      revalidateEntryData();
+    }
+  };
 
-      setIsLoadingSave(true);
-
-      try {
-        await fetch(`/api/journal/${id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: value }),
-        });
-
-        lastSavedRef.current = value;
-      } catch (err) {
-        console.error("Error autosaving journal entry:", err);
-      } finally {
-        setIsLoadingSave(false);
+  const revalidateEntryData = async () => {
+    setRefetchData(true);
+    try {
+      const res = await fetch(`/api/journal/${id}`);
+      const json = await res.json();
+      if (res.ok && json.data) {
+        setEntry(json.data);
       }
-    },
-  });
+    } catch (err) {
+      console.error("Error refetching journal entry:", err);
+    } finally {
+      setRefetchData(false);
+    }
+  };
 
   if (loading || !entry) {
     return (
@@ -100,7 +112,7 @@ const SingleEntry = () => {
         <header className="mt-8">
           <div>
             <button
-              className="text-sm text-blue-500 hover:underline mb-4 block cursor-pointer"
+              className="text-sm text-blue-500 hover:underline mb-4 block cursor-pointer ml-1.5"
               onClick={() => router.replace("/journal")}
             >
               &larr; Back to Entries
@@ -140,9 +152,14 @@ const SingleEntry = () => {
             &larr; Back to Entries
           </button>
         </div>
-        <h1 className="text-[40px] font-thin tracking-tight">
-          {entry.title || "Untitled Entry"}
-        </h1>
+        {refetchData ? (
+          <h1 className="text-[40px] font-thin tracking-tight animate-pulse bg-gray-300 h-10 w-1/4 rounded" />
+        ) : (
+          <h1 className="text-[40px] font-thin tracking-tight">
+            {entry.title || "Untitled Entry"}
+          </h1>
+        )}
+
         <p className="text-sm text-gray-400 mt-1">
           {new Date(entry.createdAt).toLocaleDateString()}{" "}
           {new Date(entry.createdAt).toLocaleTimeString()}
@@ -151,44 +168,111 @@ const SingleEntry = () => {
       <div className="flex gap-10 md:gap-16 lg:gap-20 justify-between w-full lg:flex-row flex-col h-full">
         <div className="p-12 w-full">
           <article className="px-6 py-6 border rounded-lg shadow-sm bg-white dark:bg-gray-800 overflow-hidden h-60">
-            <div className="mb-2 text-xs text-gray-400">
+            <div className="mb-2 text-xs text-gray-400 flex items-center gap-2">
               {isLoadingSave ? "Saving..." : "Saved"}
+              {!isEditing && (
+                <button
+                  className="ml-2 text-blue-500 hover:text-blue-700 cursor-pointer"
+                  title="Edit Entry"
+                  onClick={() => setIsEditing(true)}
+                  aria-label="Edit Entry"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-4 h-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.862 3.487a2.25 2.25 0 1 1 3.182 3.182L7.5 19.213l-4.182.455a.75.75 0 0 1-.826-.826l.455-4.182L16.862 3.487z"
+                    />
+                  </svg>
+                </button>
+              )}
             </div>
 
             <textarea
               className="w-full h-30 bg-transparent border-0 focus:ring-0 resize-none outline-none text-gray-800 dark:text-gray-200 leading-relaxed"
               value={editedEntry}
               onChange={(e) => setEditedEntry(e.target.value)}
+              readOnly={!isEditing}
             />
+
+            {isEditing && (
+              <div className="flex justify-end mt-2">
+                <button
+                  className="px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm cursor-pointer"
+                  onClick={handleUpdate}
+                  disabled={isLoadingSave}
+                >
+                  {isLoadingSave ? "Updating..." : "Update Entry"}
+                </button>
+                <button
+                  className="ml-2 px-4 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 text-sm cursor-pointer"
+                  onClick={() => {
+                    setEditedEntry(entry.content);
+                    setIsEditing(false);
+                  }}
+                  disabled={isLoadingSave}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
 
             <footer className="mt-6 text-xs text-gray-500 flex justify-end">
               Updated {new Date(entry.updatedAt).toLocaleDateString()}
             </footer>
           </article>
         </div>
-        <div className="w-full">
-          <div className="border-l border-2 border-gray-700">
-            <div className="bg-gray-700 p-3.5">
-              <h2 className="text-2xl font-semibold mb-4">Analyses</h2>
+        {refetchData ? (
+          <div className="w-full">
+            <div className="border-2 border-gray-700">
+              <div className="bg-gray-700 p-4">
+                <div className="h-6 w-1/3 bg-gray-600 rounded animate-pulse" />
+              </div>
+
+              <ul className="p-0 m-0">
+                <li className="space-y-6 p-6">
+                  {[...Array(4)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-9 w-full bg-gray-700 rounded animate-pulse"
+                    />
+                  ))}
+                </li>
+              </ul>
             </div>
-            <ul className="list-none p-0 m-0">
-              <li key={entry.analysis?.name} className="relative ">
-                <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
-                  {entry.analysis?.summary}
-                </h3>
-                <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
-                  {entry.analysis?.mood} {"  "} {entry.analysis?.sticker}
-                </h3>
-                <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
-                  {entry.analysis?.summary}
-                </h3>
-                <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
-                  {entry.analysis?.negative ? "Negative" : "Positive"}
-                </h3>
-              </li>
-            </ul>
           </div>
-        </div>
+        ) : (
+          <div className="w-full">
+            <div className="border-l border-2 border-gray-700">
+              <div className="bg-gray-700 p-3.5">
+                <h2 className="text-2xl font-semibold mb-4">Analyses</h2>
+              </div>
+              <ul className="list-none p-0 m-0">
+                <li className="relative ">
+                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                    {entry.analysis?.summary}
+                  </h3>
+                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                    {entry.analysis?.mood} {"  "} {entry.analysis?.sticker}
+                  </h3>
+                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                    {entry.analysis?.summary}
+                  </h3>
+                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
+                    {entry.analysis?.negative ? "Negative" : "Positive"}
+                  </h3>
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
