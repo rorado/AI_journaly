@@ -2,51 +2,21 @@
 
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
 
 export default function Home() {
   const { userId } = useAuth();
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.playbackRate = 1;
-
-    const handleTimeUpdate = () => {
-      const remaining = video.duration - video.currentTime;
-
-      if (remaining <= 2) {
-        const progress = Math.max(remaining / 2, 0);
-        video.playbackRate = 0.5 + progress * 0.5;
-      }
-    };
-
-    video.addEventListener("timeupdate", handleTimeUpdate);
-
-    return () => {
-      video.removeEventListener("timeupdate", handleTimeUpdate);
-    };
-  }, []);
-
   const href = userId ? "/journal" : "/sign-in";
 
   return (
     <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 text-foreground">
-      {/* 🎥 Background Video */}
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover -z-10"
-      >
-        <source src="/videos/Ai_.mp4" type="video/mp4" />
-      </video>
+      {/* 🖼️ Background Image */}
+      <div
+        className="absolute inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/ai.jpg')" }}
+      />
 
       {/* 🌑 Overlay */}
-      <div className="absolute inset-0 bg-black/50 -z-10" />
+      <div className="absolute inset-0 bg-black/60 -z-10" />
 
       {/* Content */}
       <div className="flex flex-col gap-1.5 max-w-xl text-center">
