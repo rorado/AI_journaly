@@ -41,10 +41,10 @@ const JournalPage = () => {
   }, []);
 
   return (
-    <div className="px-8">
+    <div className="px-0 lg:px-8 pt-6 w-full overflow-y-auto h-screen">
       <div className="mb-6 px-6 py-1.5">
         <div className="flex justify-between items-center">
-          <h1 className="text-[40px] my-2 font-thin">Journals</h1>
+          <h1 className="text-2xl my-2 font-thin mx-0.5">Journals</h1>
           <div className="flex items-center gap-2">
             <NewEntryCard handleReload={handlegGetEntry} />
             <RefreshEntries handleReload={handlegGetEntry} />

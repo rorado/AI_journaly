@@ -59,17 +59,16 @@ body {
   display: none;
 }
 
-
-
-/* From Uiverse.io by PriyanshuGupta28 */ 
+/* From Uiverse.io by PriyanshuGupta28 */
 .containerLoading {
   width: 50px;
   height: 50px;
-  --c: radial-gradient(farthest-side,#ffffff 92%,#0000);
-  background: var(--c) 50%  0, 
-    var(--c) 50%  100%, 
-    var(--c) 100% 50%, 
-    var(--c) 0    50%;
+  --c: radial-gradient(farthest-side, #ffffff 92%, #0000);
+  background:
+    var(--c) 50% 0,
+    var(--c) 50% 100%,
+    var(--c) 100% 50%,
+    var(--c) 0 50%;
   background-size: 10px 10px;
   background-repeat: no-repeat;
   animation: s8 1s infinite;
@@ -81,44 +80,50 @@ body {
   position: absolute;
   inset: 0;
   margin: 3px;
-  background: repeating-conic-gradient(#d9d1d100 0 35deg,#000000 0 90deg);
-  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 3px),#000 0);
+  background: repeating-conic-gradient(#d9d1d100 0 35deg, #000000 0 90deg);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 3px), #000 0);
   border-radius: 50%;
 }
 
 @keyframes s8 {
- 
   100% {
-    transform: rotate(.5turn)
+    transform: rotate(0.5turn);
   }
 }
-
 
 /* add button  */
 .cssbuttons-io-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: .2em;
+  gap: 0.2em;
   font-family: inherit;
   font-weight: 600;
   font-size: 16px;
-  padding: .5em 1.5em;
+  padding: 0.5em 1.5em;
   color: white;
   background: linear-gradient(0deg, #155dfc, #155dfc);
   border: none;
   outline: none;
   border-bottom: 3px solid #0b3d91;
-  box-shadow: 0 .5em .5em -.4em rgb(0, 0, 0, .5);
+  box-shadow: 0 0.5em 0.5em -0.4em rgb(0, 0, 0, 0.5);
   letter-spacing: 0.08em;
   border-radius: 20em;
   cursor: pointer;
-  transition: .5s;
+  height: fit-content;
+  transition: 0.5s;
+}
+
+@media (max-width: 640px) {
+  .cssbuttons-io-button {
+    font-size: 10px;
+    padding: 0.4em 1em;
+  }
 }
 
 .cssbuttons-io-button:hover {
   filter: brightness(1.2);
-  box-shadow: 0 .7em .7em -.4em rgb(0, 0, 0, .5);
+  box-shadow: 0 0.7em 0.7em -0.4em rgb(0, 0, 0, 0.5);
   transform: translateY(-3px);
 }
 
@@ -127,35 +132,7 @@ body {
   transform: rotate(-10deg);
 }
 
-
-
-/* From Uiverse.io by andrew-demchenk0 */ 
-.button_refresh {
-  --blue-main: #155dfc;
-  --blue-dark: #0b3d91;
-
-  position: relative;
-  width: 150px;
-  height: 40px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-
-  font-family: inherit;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: white;
-
-  background: linear-gradient(0deg, var(--blue-main), var(--blue-main));
-  border: none;
-  border-bottom: 3px solid var(--blue-dark);
-  border-radius: 20em;
-
-  box-shadow: 0 .5em .5em -.4em rgb(0 0 0 / 0.5);
-  overflow: hidden;
-
-  transition: 0.5s;
-}
+/* From Uiverse.io by andrew-demchenk0 */
 
 .button_refresh,
 .button_refresh .button__icon,
@@ -187,7 +164,7 @@ body {
 /* Hover — same lift + brightness */
 .button_refresh:hover {
   filter: brightness(1.2);
-  box-shadow: 0 .7em .7em -.4em rgb(0 0 0 / 0.5);
+  box-shadow: 0 0.7em 0.7em -0.4em rgb(0 0 0 / 0.5);
   transform: translateY(-3px);
 }
 

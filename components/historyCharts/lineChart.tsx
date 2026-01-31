@@ -25,6 +25,7 @@ ChartJS.register(
 
 export const options: ChartOptions<"line"> = {
   responsive: true,
+  maintainAspectRatio: false,
   animation: {
     duration: 3000,
     easing: "easeOutQuart",
@@ -66,5 +67,15 @@ export function LineChart({ Entries }: { Entries: any[] }) {
     ],
   };
 
-  return <Line options={options} data={data} />;
+  return (
+    <div className="h-125 lg:h-100 w-full">
+      <Line
+        data={data}
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+        }}
+      />
+    </div>
+  );
 }

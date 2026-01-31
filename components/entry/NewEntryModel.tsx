@@ -92,7 +92,7 @@ export default function NewEntryModel({
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="bg-slate-100 w-full text-sm text-slate-900 px-4 py-3 rounded-md outline-0 border border-gray-200 focus:border-blue-600 focus:bg-transparent resize-none"
-                placeholder="Write your thoughts here..."
+                placeholder="Write what happened today..."
               />
             </div>
 
