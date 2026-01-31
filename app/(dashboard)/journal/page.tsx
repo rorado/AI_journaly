@@ -5,10 +5,12 @@ import RefreshEntries from "@/components/entry/RefreshEntries";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Loading from "@/components/LoadingSVG";
+import { useRouter } from "next/navigation";
 
 const JournalPage = () => {
   const [entries, setEntries] = useState<Journal[]>([]);
   const [loading, setLoading] = useState(false);
+
   const handlegGetEntry = async () => {
     setLoading(true);
     try {

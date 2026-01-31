@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ModalPortal from "../ModalPortal";
 import { CgClose } from "react-icons/cg";
+import { useRouter } from "next/navigation";
 
 export default function NewEntryModel({
   toggle,
@@ -16,6 +17,7 @@ export default function NewEntryModel({
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +34,10 @@ export default function NewEntryModel({
       if (!res.ok) {
         console.log("Response not ok:", res);
       }
-
+      const data = await res.json();
       setContent("");
+      router.push(`/journal/${data.data?.entry?.id}`);
+
       handleReload();
     } catch (err) {
       setError("Failed to add journal entry");
