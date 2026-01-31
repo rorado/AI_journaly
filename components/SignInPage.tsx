@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { OAuthStrategy } from "@clerk/types";
 import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
+  const router = useRouter();
   const { signIn, isLoaded } = useSignIn();
 
   const [email, setEmail] = useState("");
@@ -18,7 +20,7 @@ export default function SignInPage() {
 
     try {
       await signIn.create({ identifier: email, password });
-      window.location.href = "/";
+      router.replace("/new-user");
     } catch (err: any) {
       setError(err.errors?.[0]?.longMessage || "Sign in failed");
     }
@@ -29,11 +31,10 @@ export default function SignInPage() {
 
     signIn.authenticateWithRedirect({
       strategy,
-      redirectUrl: "/sign-up/sso-callback",
+      redirectUrl: "/sign-in/sso-callback",
       redirectUrlComplete: "/new-user",
     });
   };
-
   return (
     <div className="lg:min-h-screen flex flex-col items-center justify-center p-6 bg-background text-foreground">
       <div className="grid lg:grid-cols-2 items-center gap-10 max-w-6xl max-lg:max-w-lg w-full">

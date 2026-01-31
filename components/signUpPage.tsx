@@ -49,7 +49,7 @@ export default function SignUpPage() {
 
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId! });
-        router.push("/new-user");
+        router.replace("/new-user");
       }
     } catch (err: any) {
       setError(err.errors?.[0]?.longMessage || "Verification failed");
