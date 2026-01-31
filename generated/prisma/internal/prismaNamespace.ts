@@ -703,6 +703,7 @@ export const AnalysisScalarFieldEnum = {
   negative: 'negative',
   color: 'color',
   sticker: 'sticker',
+  advice: 'advice',
   sentimentScore: 'sentimentScore'
 } as const
 

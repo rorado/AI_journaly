@@ -45,6 +45,7 @@ export const TextAnalysisSchema = z.object({
   summary: z.string().min(1),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
   sticker: z.string().min(1).max(2),
+  advice: z.string().min(1),
   sentimentScore: z.number().min(-10).max(10),
 });
 
@@ -71,6 +72,7 @@ Output format:
   "summary": string,
   "color": string,
   "sticker": string,
+  "advice": string (supportive advice message),
   "sentimentScore": int (number between -10 and 10)
 }}
 

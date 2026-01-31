@@ -142,7 +142,7 @@ const SingleEntry = () => {
   }
 
   return (
-    <div className="px-8  mx-auto w-full h-full">
+    <div className="px-8  mx-auto w-full h-fit">
       <header className="mb-8">
         <div>
           <button
@@ -166,8 +166,8 @@ const SingleEntry = () => {
         </p>
       </header>
       <div className="flex gap-10 md:gap-16 lg:gap-20 justify-between w-full lg:flex-row flex-col h-full">
-        <div className="p-12 w-full">
-          <article className="px-6 py-6 border rounded-lg shadow-sm bg-white dark:bg-gray-800 overflow-hidden h-60">
+        <div className="p-12 w-full h-fit">
+          <article className="px-6 py-6 border rounded-lg shadow-sm  dark:bg-gray-800 overflow-hidden h-60 ">
             <div className="mb-2 text-xs text-gray-400 flex items-center gap-2">
               {isLoadingSave ? "Saving..." : "Saved"}
               {!isEditing && (
@@ -205,14 +205,14 @@ const SingleEntry = () => {
             {isEditing && (
               <div className="flex justify-end mt-2">
                 <button
-                  className="px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm cursor-pointer"
+                  className={`px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm ${isLoadingSave ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                   onClick={handleUpdate}
                   disabled={isLoadingSave}
                 >
                   {isLoadingSave ? "Updating..." : "Update Entry"}
                 </button>
                 <button
-                  className="ml-2 px-4 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 text-sm cursor-pointer"
+                  className={`ml-2 px-4 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 text-sm ${isLoadingSave ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                   onClick={() => {
                     setEditedEntry(entry.content);
                     setIsEditing(false);
@@ -249,12 +249,12 @@ const SingleEntry = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full">
-            <div className="border-l border-2 border-gray-700">
+          <div className="w-full h-fit">
+            <div className="border-l border-2 border-gray-700 ">
               <div className="bg-gray-700 p-3.5">
                 <h2 className="text-2xl font-semibold mb-4">Analyses</h2>
               </div>
-              <ul className="list-none p-0 m-0">
+              <ul className="list-none p-0 m-0 ">
                 <li className="relative ">
                   <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
                     {entry.analysis?.summary}
@@ -262,8 +262,10 @@ const SingleEntry = () => {
                   <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
                     {entry.analysis?.mood} {"  "} {entry.analysis?.sticker}
                   </h3>
-                  <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
-                    {entry.analysis?.summary}
+                  <h3
+                    className={`text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700 bg-${entry.analysis?.color}`}
+                  >
+                    {entry.analysis?.sentimentScore}
                   </h3>
                   <h3 className="text-lg font-medium  p-6 flex items-center gap-2 border-b border-gray-700">
                     {entry.analysis?.negative ? "Negative" : "Positive"}
@@ -273,6 +275,29 @@ const SingleEntry = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {refetchData ? (
+        <div className="border border-gray-500 mt-20 rounded-lg bg-gray-700">
+          <h2 className="text-2xl font-semibold p-4">Advice</h2>
+          <div className="p-4">
+            <div className="h-10 w-full bg-gray-600 rounded animate-pulse" />
+          </div>
+        </div>
+      ) : (
+        <div className="border border-gray-500 mt-20 rounded-lg bg-gray-700">
+          <h2 className="text-2xl font-semibold p-4">Advice</h2>
+          <div className="p-4">
+            <p className="text-gray-100">{entry.analysis?.advice}</p>
+          </div>
+        </div>
+      )}
+
+      <div className="h-20 border-gray-500 px-4 flex items-center justify-center">
+        <p className="text-sm text-gray-400">
+          &copy; {new Date().getFullYear()} Your Journal App. All rights
+          reserved.
+        </p>
       </div>
     </div>
   );

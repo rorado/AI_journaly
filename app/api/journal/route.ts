@@ -45,6 +45,7 @@ export async function POST(request: Request) {
           color: analysis.color,
           sticker: analysis.sticker,
           sentimentScore: analysis.sentimentScore,
+          advice: analysis.advice,
         },
       },
     },

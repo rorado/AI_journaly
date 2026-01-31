@@ -20,7 +20,7 @@ export default function Home() {
 
       {/* Content */}
       <div className="flex flex-col gap-1.5 max-w-xl text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to my AI site</h1>
+        <h1 className="text-4xl font-bold mb-4">Welcome to Your Journal</h1>
 
         <p className="text-lg">
           This is the best app for tracking your mood throughout your life. All

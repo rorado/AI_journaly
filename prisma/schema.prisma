@@ -47,6 +47,7 @@ model Analysis {
   negative       Boolean
   color          String
   sticker        String
+  advice         String   @db.Text
   sentimentScore Int
 
   @@unique([journalId])
