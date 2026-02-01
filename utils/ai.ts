@@ -51,7 +51,7 @@ export const TextAnalysisSchema = z.object({
 
 const llm = new ChatGroq({
   model: "llama-3.1-8b-instant",
-  temperature: 0.1, // deterministic JSON
+  temperature: 0.1,
   apiKey: process.env.GROQ_API_KEY!,
 });
 
@@ -99,3 +99,28 @@ Journal Entry:
 export const chain = prompt.pipe(llm).pipe(parser);
 
 export type TextAnalysis = z.infer<typeof TextAnalysisSchema>;
+
+const AdviceSchema = z.object({
+  advice: z.string().min(1),
+});
+
+export type AdviceOutput = z.infer<typeof AdviceSchema>;
+
+const advicePrompt = ChatPromptTemplate.fromTemplate(`
+
+Guidance should focus on self-improvement, emotional well-being, and practical steps to enhance personal growth.
+
+Contextual Journal Entries:
+Return ONLY valid JSON.
+No markdown. No explanations.
+
+Output format:
+{{
+  "advice": string (a detailed, supportive article-style guidance)
+}}
+
+Journal Entries:
+{JournaliesEntry}
+`);
+
+export const adviceChain = advicePrompt.pipe(llm).pipe(parser);

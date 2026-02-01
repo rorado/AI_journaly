@@ -18,7 +18,7 @@ const HistoryPage = async () => {
     <div className="p-8">
       <div>
         <h1 className="text-2xl font-semibold mb-4">History Page</h1>
-        <p>This is the history page in that year</p>
+        <p>explore your journal entries over time</p>
       </div>
 
       <div>

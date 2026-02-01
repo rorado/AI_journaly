@@ -13,6 +13,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const menu = [
     { name: "Entries", link: "/journal" },
     { name: "History", link: "/history" },
+    { name: "Advices", link: "/advices" },
   ];
 
   const [isCollapsed, setIsCollapsed] = useState<boolean | null>(true);
@@ -68,7 +69,16 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             className={`flex flex-col px-4 ${isCollapsed ? "hidden" : "block"}`}
           >
             {menu.map((item) => (
-              <Link key={item.link} href={item.link} className="w-full">
+              <Link
+                key={item.link}
+                href={item.link}
+                className="w-full"
+                onClick={() => {
+                  if (window.innerWidth < 1024) {
+                    setIsCollapsed(true);
+                  }
+                }}
+              >
                 <li
                   className={`flex justify-center cursor-pointer hover:bg-blue-400 hover:text-white p-2 rounded-lg mt-0.5 ${pathname === item.link ? "bg-blue-600 text-white" : ""}`}
                 >
