@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Loading from "@/components/LoadingSVG";
@@ -252,7 +253,9 @@ const SingleEntry = () => {
           <div className="w-full h-fit">
             <div className="border-l border-2 border-gray-700 ">
               <div className="bg-gray-700 p-3.5">
-                <h2 className="text-2xl font-semibold mb-4">Analyses</h2>
+                <h2 className="text-2xl font-semibold mb-4 text-white">
+                  Analyses
+                </h2>
               </div>
               <ul className="list-none p-0 m-0 ">
                 <li className="relative ">
@@ -286,7 +289,7 @@ const SingleEntry = () => {
         </div>
       ) : (
         <div className="border border-gray-500 mt-20 rounded-lg bg-gray-700">
-          <h2 className="text-2xl font-semibold p-4">Advice</h2>
+          <h2 className="text-2xl font-semibold p-4 text-white">Advice</h2>
           <div className="p-4">
             <p className="text-gray-100">{entry.analysis?.advice}</p>
           </div>
