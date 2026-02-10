@@ -20,6 +20,30 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Using the App
+
+### 1) Sign in or create an account
+
+- Go to the sign-in page and authenticate.
+- If you are new, use the sign-up flow first.
+
+### 2) Create your first journal entry
+
+- Open the Journal page and click the create entry action.
+- Write your entry and submit to save it.
+
+### 3) View analysis and advice
+
+- After saving, open the entry to see AI analysis and advice.
+
+### 4) Review history
+
+- Visit the History page to browse past entries and trends.
+
+### 5) Manage your account
+
+- Use the dashboard area to manage entries and revisit advice.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

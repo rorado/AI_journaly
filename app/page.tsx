@@ -19,7 +19,7 @@ export default function Home() {
       <div className="absolute inset-0 bg-black/60 -z-10" />
 
       {/* Content */}
-      <div className="flex flex-col gap-1.5 max-w-xl text-center">
+      <div className="flex flex-col gap-1.5 max-w-xl text-center text-white">
         <h1 className="text-4xl font-bold mb-4">Welcome to Your Journal</h1>
 
         <p className="text-lg">
